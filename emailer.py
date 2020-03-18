@@ -4,17 +4,14 @@ import os
 SMTP_SERVER = 'smtp.gmail.com'  #Email Server (don't change!)
 SMTP_PORT = 587  #Server Port (don't change!)
 
-GMAIL_USERNAME = os.environ.get('EMAIL_ADDRESS')
-GMAIL_PASSWORD = os.environ.get('EMAIL_PASSWORD')
-RECIPIENT = os.environ.get('EMAIL_RECIPIENT')
-
 
 class Emailer:
   def sendmail(self, recipient, subject, content):
-
+    gmail_username = os.environ.get('EMAIL_ADDRESS')
+    gmail_password = os.environ.get('EMAIL_PASSWORD')
     #Create Headers
     headers = [
-        "From: " + GMAIL_USERNAME, "Subject: " + subject, "To: " + recipient,
+        "From: " + gmail_username, "Subject: " + subject, "To: " + recipient,
         "MIME-Version: 1.0", "Content-Type: text/html"
     ]
     headers = "\r\n".join(headers)
@@ -26,13 +23,13 @@ class Emailer:
     session.ehlo()
 
     #Login to Gmail
-    session.login(GMAIL_USERNAME, GMAIL_PASSWORD)
+    session.login(gmail_username, gmail_password)
 
     #Send Email & Exit
-    session.sendmail(GMAIL_USERNAME, recipient, headers + "\r\n\r\n" + content)
+    session.sendmail(gmail_username, recipient, headers + "\r\n\r\n" + content)
     session.quit()
 
 
 def notify(subject, text):
   sender = Emailer()
-  sender.sendmail(RECIPIENT, subject, text)
+  sender.sendmail(os.environ.get('EMAIL_RECIPIENT'), subject, text)
