@@ -1,14 +1,18 @@
 import smtplib
 import os
+import json
 
 SMTP_SERVER = 'smtp.gmail.com'  #Email Server (don't change!)
 SMTP_PORT = 587  #Server Port (don't change!)
 
+with open(os.path.expanduser('~/env'), 'r') as env_file:
+  env = json.loads(env_file.read())
+
 
 class Emailer:
   def sendmail(self, recipient, subject, content):
-    gmail_username = os.environ.get('EMAIL_ADDRESS')
-    gmail_password = os.environ.get('EMAIL_PASSWORD')
+    gmail_username = env.get('EMAIL_ADDRESS')
+    gmail_password = env.get('EMAIL_PASSWORD')
     #Create Headers
     headers = [
         "From: " + gmail_username, "Subject: " + subject, "To: " + recipient,
@@ -32,4 +36,4 @@ class Emailer:
 
 def notify(subject, text):
   sender = Emailer()
-  sender.sendmail(os.environ.get('EMAIL_RECIPIENT'), subject, text)
+  sender.sendmail(env.get('EMAIL_RECIPIENT'), subject, text)
