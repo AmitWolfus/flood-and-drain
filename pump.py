@@ -20,3 +20,7 @@ def start():
 def stop():
   GPIO.output(relay_pin, GPIO.HIGH)
   is_running = False
+
+
+def cleanup():
+  GPIO.cleanup()

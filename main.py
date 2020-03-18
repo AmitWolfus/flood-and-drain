@@ -35,30 +35,33 @@ def drain():
 
 
 def main():
-  pump.init(RELAY_PIN)
-  time_table = get_schedule()
-  logger.log('SYSTEM BOOTING')
-  notify(
-      'Ebb and flow system starting',
-      'Ebb and flow system starting at {} with the following schedule:\n{}'.
-      format(datetime.datetime.now().strftime("%H:%M:%S"),
-             json.dumps(time_table)))
-  for sched in time_table:
-    schedule.every().day.at(sched["start"]).do(flood)
-    schedule.every().day.at(sched["end"]).do(drain)
-    start_time = datetime.datetime.strptime(sched["start"], '%H:%M').time()
-    end_time = datetime.datetime.strptime(sched["end"], '%H:%M').time()
-    start = datetime.datetime.now().replace(
-        hour=start_time.hour, minute=start_time.minute, second=0)
-    end = datetime.datetime.now().replace(
-        hour=end_time.hour, minute=end_time.minute, second=0)
-    now = datetime.datetime.now()
-    if (start < now < end):
-      flood()
+  try:
+    pump.init(RELAY_PIN)
+    time_table = get_schedule()
+    logger.log('SYSTEM BOOTING')
+    notify(
+        'Ebb and flow system starting',
+        'Ebb and flow system starting at {} with the following schedule:\n{}'.
+        format(datetime.datetime.now().strftime("%H:%M:%S"),
+               json.dumps(time_table)))
+    for sched in time_table:
+      schedule.every().day.at(sched["start"]).do(flood)
+      schedule.every().day.at(sched["end"]).do(drain)
+      start_time = datetime.datetime.strptime(sched["start"], '%H:%M').time()
+      end_time = datetime.datetime.strptime(sched["end"], '%H:%M').time()
+      start = datetime.datetime.now().replace(
+          hour=start_time.hour, minute=start_time.minute, second=0)
+      end = datetime.datetime.now().replace(
+          hour=end_time.hour, minute=end_time.minute, second=0)
+      now = datetime.datetime.now()
+      if (start < now < end):
+        flood()
 
-  while True:
-    schedule.run_pending()
-    time.sleep(1)
+    while True:
+      schedule.run_pending()
+      time.sleep(1)
+  finally:
+    pump.cleanup()
 
 
 if __name__ == '__main__':
