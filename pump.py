@@ -6,6 +6,7 @@ is_running = True
 
 def init(pin_number):
   GPIO.setmode(GPIO.BOARD)
+  global relay_pin
   relay_pin = pin_number
   GPIO.setup(relay_pin, GPIO.OUT)
   GPIO.output(relay_pin, GPIO.HIGH)
