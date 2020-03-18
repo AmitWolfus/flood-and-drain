@@ -22,18 +22,16 @@ def flood():
   pump.start()
   logger.log('Flooding system')
   notify(
-      'Flooding hydro garden',
-      f'Hydro garden flooding starting at {datetime.datetime.now().strftime("%H:%M:%S")}'
-  )
+      'Flooding hydro garden', 'Hydro garden flooding starting at {}'.format(
+          datetime.datetime.now().strftime("%H:%M:%S")))
 
 
 def drain():
   pump.stop()
   logger.log('Draining system')
   notify(
-      'Draining hydro garden',
-      f'Hydro garden draining at {datetime.datetime.now().strftime("%H:%M:%S")}'
-  )
+      'Draining hydro garden', 'Hydro garden draining at {}'.format(
+          datetime.datetime.now().strftime("%H:%M:%S")))
 
 
 def main():
@@ -42,8 +40,9 @@ def main():
   logger.log('SYSTEM BOOTING')
   notify(
       'Ebb and flow system starting',
-      f'Ebb and flow system starting at {datetime.datetime.now().strftime("%H:%M:%S")} with the following schedule:\n{json.dumps(time_table)}'
-  )
+      'Ebb and flow system starting at {} with the following schedule:\n{}'.
+      format(datetime.datetime.now().strftime("%H:%M:%S"),
+             json.dumps(time_table)))
   for sched in time_table:
     schedule.every().day.at(sched["start"]).do(flood)
     schedule.every().day.at(sched["end"]).do(drain)
